@@ -8,8 +8,8 @@
     <ProjectGuid>{3CBE9E03-1968-4277-850D-70E944B1305D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nine.Injection</RootNamespace>
-    <AssemblyName>Nine.Injection</AssemblyName>
+    <RootNamespace>Nine.Formatting</RootNamespace>
+    <AssemblyName>Nine.Formatting</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,13 +35,33 @@
     <DownloadNuGetExe>true</DownloadNuGetExe>
     <BuildPackage>true</BuildPackage>
     <RunCodeAnalysis>true</RunCodeAnalysis>
-    <DocumentationFile>bin\Release\Nine.Injection.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Nine.Formatting.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net45+wp80+win8+wpa81+aspnetcore50\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\packages\protobuf-net.2.0.0.668\lib\portable-sl4+net40+wp7+windows8\protobuf-net.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BsonFormatter.cs" />
+    <Compile Include="ConcurrentDictionary.cs" />
+    <Compile Include="IFormatter.cs" />
+    <Compile Include="MarkerInterface.cs" />
+    <Compile Include="ITextConverter.cs" />
+    <Compile Include="JsonFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtoFormatter.cs" />
+    <Compile Include="StringBuilderCache.cs" />
+    <Compile Include="UriFormatter.cs" />
+    <Compile Include="UriQueryUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Nine.Formatting.nuspec" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="$(SolutionDir)\NuGet.targets" Condition="Exists('$(SolutionDir)\NuGet.targets')" />
