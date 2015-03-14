@@ -6,12 +6,14 @@
     {
         public override IEnumerable<IFormatter> GetData()
         {
+            var converter = new TextConverter(new TypeConverter(typeof(BasicTypes)));
+
             return new IFormatter[]
             {
                 new ProtoFormatter(),
-                new JsonFormatter(),
+                new JsonFormatter(converter),
                 new BsonFormatter(),
-                new UriFormatter(),
+                new UriFormatter(converter),
             };
         }
     }

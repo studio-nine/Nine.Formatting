@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
 
@@ -26,23 +25,62 @@
 
         public bool CanConvert(Type type)
         {
-            return converters.ContainsKey(type);
+            return GetConverter(type) != null;
+        }
+
+        private IConverter GetConverter(Type type)
+        {
+            IConverter converter = null;
+            while (type != null)
+            {
+                if (converters.TryGetValue(type, out converter)) break;
+                type = type.GetTypeInfo().BaseType;
+            }
+            return converter;
+        }
+
+        public bool ToText(object value, out string result)
+        {
+            if (value == null)
+            {
+                result = null;
+                return false;
+            }
+
+            var converter = GetConverter(value.GetType());
+            if (converter != null)
+            {
+                result = converter.ToText(value);
+                return true;
+            }
+
+            result = null;
+            return false;
         }
 
         public string ToText(object value)
         {
-            IConverter converter = null;
-            if (value == null) return null;
-            if (converters.TryGetValue(value.GetType(), out converter)) return converter.ToText(value);
-            return value.ToString();
+            string result;
+            return ToText(value, out result) ? result : value?.ToString();
+        }
+
+        public bool FromText(Type type, string text, out object value)
+        {
+            var converter = GetConverter(type);
+            if (converter != null)
+            {
+                value = converter.FromText(text);
+                return true;
+            }
+
+            value = null;
+            return false;
         }
 
         public object FromText(Type type, string text)
         {
-            IConverter converter = null;
-            if (type == null) return null;
-            if (converters.TryGetValue(type, out converter)) return converter.FromText(text);
-            return null;
+            object result;
+            return FromText(type, text, out result) ? result : null;
         }
 
         interface IConverter

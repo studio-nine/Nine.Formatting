@@ -12,7 +12,10 @@
         private static readonly ConcurrentDictionary<Type, object> defaultValues = new ConcurrentDictionary<Type, object>();
         private static readonly Encoding encoding = new UTF8Encoding(false, false);
 
+        private readonly TextConverter converter;
+
         public UriFormatter() { }
+        public UriFormatter(TextConverter converter) { this.converter = converter; }
 
         public object FromBytes(Type type, byte[] bytes, int index, int count)
         {
@@ -63,10 +66,13 @@
 
         private object ConvertBack(string text, Type type)
         {
-            var typeInfo = type.GetTypeInfo();
-
-            if (string.IsNullOrEmpty(text)) return typeInfo.IsValueType ? Activator.CreateInstance(type) : null;
+            object result;
+            if (converter != null && converter.FromText(type, text, out result)) return result;
+            if (converter != null && converter.CanConvert(type)) return converter.FromText(type, text);
+            if (string.IsNullOrEmpty(text)) return type.GetTypeInfo().IsValueType ? Activator.CreateInstance(type) : null;
             if (type == typeof(string)) return text;
+
+            var typeInfo = type.GetTypeInfo();
             if (typeInfo.IsPrimitive) return Convert.ChangeType(text, type);
             if (typeInfo.IsEnum) return TryParseEnum(type, text);
             if (type == typeof(TimeSpan)) return TimeSpan.Parse(text);
@@ -114,6 +120,8 @@
 
         private string ConvertTo(object value)
         {
+            string result;
+            if (converter != null && converter.ToText(value, out result)) return result;
             if (value is DateTime) return ((DateTime)value).ToString("o");
             return value.ToString();
         }

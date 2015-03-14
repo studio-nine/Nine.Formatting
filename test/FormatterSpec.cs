@@ -18,9 +18,14 @@
         public void it_should_format_basic_types(IFormatter formatter)
         {
             var a = new BasicTypes();
-            var b = PingPong(formatter, a,
-                // Should respect type binder and does not use full type name.
-                text => Assert.False(text.Contains("Nine.Formatting")));
+            var b = PingPong(formatter, a, text =>
+            {
+                // Should respect type convert and not use full type name.
+                if (formatter is JsonFormatter || formatter is UriFormatter)
+                {
+                    Assert.False(text.Contains("Nine.Formatting"));
+                }
+            });
             Assert.Equal(JsonConvert.SerializeObject(a), JsonConvert.SerializeObject(b));
         }
 
