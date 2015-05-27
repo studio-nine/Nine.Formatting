@@ -10,6 +10,12 @@
 
     public class JsonFormatter : IFormatter, ITextFormatter
     {
+        public Formatting Formatting
+        {
+            get { return json.Formatting; }
+            set { json.Formatting = value; }
+        }
+
         private readonly Encoding encoding = new UTF8Encoding(false);
         private readonly JsonSerializer json;
         
