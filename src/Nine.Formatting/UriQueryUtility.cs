@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved. See License.txt in the project root for license information.
 
 using System;
-using System.Diagnostics.Contracts;
 using System.Text;
 
 namespace Nine.Formatting
@@ -163,8 +162,6 @@ namespace Nine.Formatting
 
         private static char IntToHex(int n)
         {
-            Contract.Assert(n < 0x10);
-
             if (n <= 9)
                 return (char)(n + (int)'0');
             else
