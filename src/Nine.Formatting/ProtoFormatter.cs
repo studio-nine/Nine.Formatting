@@ -7,6 +7,7 @@
     using ProtoBuf;
     using System.Collections.Concurrent;
 
+#if !PCL
     public class ProtoFormatter : IFormatter
     {
         private readonly MethodInfo deserialize = typeof(Serializer).GetRuntimeMethods().Single(m => m.Name == "Deserialize");
@@ -68,4 +69,5 @@
             return DateTime.SpecifyKind(value, DateTimeKind.Utc);
         }
     }
+#endif
 }
