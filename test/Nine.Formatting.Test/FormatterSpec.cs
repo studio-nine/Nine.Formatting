@@ -6,15 +6,25 @@
     using Newtonsoft.Json;
     using Xunit;
     using ProtoBuf;
-    using System.Collections.Generic;
 
-    public abstract class FormatterSpec<TData> : ITestData<IFormatter> where TData : ITestData<IFormatter>, new()
+    public class FormatterSpec
     {
-        public static IEnumerable<object[]> Data = new TestDimension<TData, IFormatter>();
+        public static TheoryData<IFormatter> Formatters => _formatters.Value;
 
-        public abstract IEnumerable<IFormatter> GetData();
+        private static readonly Lazy<TheoryData<IFormatter>> _formatters = new Lazy<TheoryData<IFormatter>>(() =>
+        {
+            var converter = new TextConverter(new TypeConverter(typeof(BasicTypes)));
 
-        [Theory, MemberData("Data")]
+            return new TheoryData<IFormatter>
+            {
+                new ProtoFormatter(),
+                new JsonFormatter(converter),
+                new BsonFormatter(),
+                new UriFormatter(converter),
+            };
+        });
+
+        [Theory, MemberData(nameof(Formatters))]
         public void it_should_format_basic_types(IFormatter formatter)
         {
             var a = new BasicTypes();
@@ -29,7 +39,7 @@
             Assert.Equal(JsonConvert.SerializeObject(a), JsonConvert.SerializeObject(b));
         }
 
-        [Theory, MemberData("Data")]
+        [Theory, MemberData(nameof(Formatters))]
         public void it_should_not_format_private_members(IFormatter formatter)
         {
             var a = new BasicTypes();
@@ -37,7 +47,7 @@
                 text => Assert.False(text.Contains("notSerialized")));
         }
 
-        [Theory, MemberData("Data")]
+        [Theory, MemberData(nameof(Formatters))]
         public void it_should_not_format_default_values(IFormatter formatter)
         {
             var a = new BasicTypes { DateTime = new DateTime() };
@@ -45,7 +55,7 @@
                 text => Assert.False(text.Contains("0001-01")));
         }
 
-        [Theory, MemberData("Data")]
+        [Theory, MemberData(nameof(Formatters))]
         public void i_can_add_new_fields(IFormatter formatter)
         {
             var a = new BasicTypes();
@@ -53,7 +63,7 @@
             Assert.Equal(a.String, b.String);
         }
 
-        [Theory, MemberData("Data")]
+        [Theory, MemberData(nameof(Formatters))]
         public void i_can_remove_existing_fields(IFormatter formatter)
         {
             var a = new AddNewField();
@@ -61,7 +71,7 @@
             Assert.Equal(a.String, b.String);
         }
 
-        [Theory, MemberData("Data")]
+        [Theory, MemberData(nameof(Formatters))]
         public void it_should_fallback_to_default_if_an_enum_value_is_not_found(IFormatter formatter)
         {
             if (formatter is ProtoFormatter || formatter is BsonFormatter) return;
@@ -73,7 +83,7 @@
             Assert.Equal((StringComparison)0, b.Comparison);
         }
 
-        [Theory, MemberData("Data")]
+        [Theory, MemberData(nameof(Formatters))]
         public void i_can_turn_fields_into_nullable(IFormatter formatter)
         {
             var a = new NotNullable();
@@ -81,7 +91,7 @@
             Assert.Equal(a.Value, b.Value);
         }
 
-        [Theory, MemberData("Data")]
+        [Theory, MemberData(nameof(Formatters))]
         public void formatter_speed(IFormatter formatter)
         {
             var sw = Stopwatch.StartNew();

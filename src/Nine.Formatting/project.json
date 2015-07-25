@@ -8,35 +8,14 @@
   "licenseUrl": "https://github.com/studio-nine/Nine.Formatting/blob/master/LICENSE",
 
   "dependencies": {
-    "protobuf-net": "2.0.0.668",
-    "Newtonsoft.Json": "6.0.8"
+    "Newtonsoft.Json": "6.0.8",
+    "protobuf-net": "2.0.0.668"
   },
 
   "frameworks": {
     "dnx451": {
       "frameworkAssemblies": {
         "System.Xml": "4.0.0.0"
-      }
-    },
-    ".NETPortable,Version=v4.5,Profile=Profile78": {
-      "frameworkAssemblies": {
-        "System.Collections": "",
-        "System.Diagnostics.Debug": "",
-        "System.Diagnostics.Tools": "",
-        "System.Globalization": "",
-        "System.IO": "",
-        "System.Linq": "",
-        "System.Reflection": "",
-        "System.Reflection.Extensions": "",
-        "System.Runtime": "",
-        "System.Runtime.Extensions": "",
-        "System.Text.Encoding": "",
-        "System.Text.Encoding.Extensions": "",
-        "System.Threading": "",
-        "System.Threading.Tasks": ""
-      },
-      "compilationOptions": {
-        "define": ["PCL"]
       }
     }
   }
