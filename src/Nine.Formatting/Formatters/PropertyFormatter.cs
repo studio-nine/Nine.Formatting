@@ -9,8 +9,15 @@
 
     public class PropertyFormatter : IPropertyFormatter
     {
-        private static readonly ConcurrentDictionary<Type, Dictionary<string, PropertyDescription>> _descriptions =
-                            new ConcurrentDictionary<Type, Dictionary<string, PropertyDescription>>();
+        struct TypeDescrition
+        {
+            public ConstructorInfo Constructor;
+            public Dictionary<string, PropertyDescription> PropertiesByName;
+            public PropertyDescription[] PropertiesByOrdinal;
+        }
+
+        private static readonly ConcurrentDictionary<Type, TypeDescrition> _descriptions =
+                            new ConcurrentDictionary<Type, TypeDescrition>();
 
         private readonly TextConverter _textConverter;
         private readonly Func<Type, object> _activator;
@@ -21,9 +28,15 @@
             _activator = activator;
         }
 
-        public PropertyElement[] ToProperties(Type type, object obj)
+        public IReadOnlyDictionary<string, PropertyDescription> GetPropertiesByName(Type type)
+            => GetDescriptionForType(type).PropertiesByName;
+
+        public IReadOnlyList<PropertyDescription> GetPropertiesByOrdinal(Type type)
+            => GetDescriptionForType(type).PropertiesByOrdinal;
+
+        public IEnumerable<PropertyElement> ToProperties(Type type, object obj)
         {
-            var descriptions = GetDescriptionForType(type);
+            var descriptions = GetDescriptionForType(type).PropertiesByName;
             var elements = new PropertyElement[descriptions.Count];
 
             foreach (var desc in descriptions.Values)
@@ -39,17 +52,26 @@
         public object FromProperties(Type type, IEnumerable<PropertyElement> properties)
         {
             var descriptions = GetDescriptionForType(type);
-            var result = _activator != null ? _activator(type) : Activator.CreateInstance(type);
+            if (descriptions.Constructor != null)
+            {
 
-            // TODO: Immutable object construction
+            }
+
+            var result = _activator != null ? _activator(type) : Activator.CreateInstance(type);
 
             foreach (var property in properties)
             {
-                PropertyDescription desc;
-
-                if (descriptions.TryGetValue(property.Description.Name, out desc))
+                if (!property.Description.IsReadOnly)
                 {
-                    desc.SetValue(result, property.Value);
+                    PropertyDescription desc;
+
+                    if (descriptions.PropertiesByName.TryGetValue(property.Description.Name, out desc))
+                    {
+                        if (!desc.IsReadOnly)
+                        {
+                            desc.SetValue(result, property.Value);
+                        }
+                    }
                 }
             }
 
@@ -89,11 +111,12 @@
             return value.ToString();
         }
 
-        private Dictionary<string, PropertyDescription> GetDescriptionForType(Type type) => _descriptions.GetOrAdd(type, CreateDescriptionForType);
-        private Dictionary<string, PropertyDescription> CreateDescriptionForType(Type type)
+        private TypeDescrition GetDescriptionForType(Type type) => _descriptions.GetOrAdd(type, CreateDescriptionForType);
+        private TypeDescrition CreateDescriptionForType(Type type)
         {
             var ordinal = 0;
-            var result = new Dictionary<string, PropertyDescription>(StringComparer.OrdinalIgnoreCase);
+            var constructor = (ConstructorInfo)null;
+            var properties = new List<PropertyDescription>();
             var ti = type.GetTypeInfo();
 
             var isImmutable = ti.DeclaredFields.Where(f => f.IsPublic).All(f => f.IsInitOnly) &&
@@ -101,17 +124,19 @@
 
             if (isImmutable)
             {
-                var constructor = ti.DeclaredConstructors.Where(c => c.IsPublic)
+                constructor = ti.DeclaredConstructors.Where(c => c.IsPublic)
                                                          .OrderByDescending(c => c.GetParameters().Length)
                                                          .FirstOrDefault();
                 if (constructor != null)
                 {
                     foreach (var parameter in constructor.GetParameters())
                     {
-                        result.Add(parameter.Name, new PropertyDescription(parameter, ordinal++));
+                        properties.Add(new PropertyDescription(parameter, ordinal++));
                     }
                 }
             }
+
+            var propertiesByName = properties.ToDictionary(p => p.Name, StringComparer.OrdinalIgnoreCase);
 
             foreach (var member in ti.DeclaredMembers)
             {
@@ -120,23 +145,34 @@
                     property.GetMethod != null && property.GetMethod.IsPublic &&
                     property.GetIndexParameters().Length == 0)
                 {
-                    if (!result.ContainsKey(property.Name))
+                    if (!propertiesByName.ContainsKey(property.Name))
                     {
-                        result.Add(property.Name, new PropertyDescription(property, ordinal++));
+                        var desc = new PropertyDescription(property, ordinal++);
+
+                        properties.Add(desc);
+                        propertiesByName.Add(property.Name, desc);
                     }
                 }
 
                 var field = member as FieldInfo;
                 if (field != null && field.IsPublic)
                 {
-                    if (!result.ContainsKey(field.Name))
+                    if (!propertiesByName.ContainsKey(field.Name))
                     {
-                        result.Add(field.Name, new PropertyDescription(field, ordinal++));
+                        var desc = new PropertyDescription(field, ordinal++);
+
+                        properties.Add(desc);
+                        propertiesByName.Add(field.Name, desc);
                     }
                 }
             }
 
-            return result;
+            return new TypeDescrition
+            {
+                Constructor = constructor,
+                PropertiesByOrdinal = properties.ToArray(),
+                PropertiesByName = propertiesByName,
+            };
         }
     }
 }

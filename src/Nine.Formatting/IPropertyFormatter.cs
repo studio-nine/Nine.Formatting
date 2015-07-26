@@ -5,7 +5,11 @@
     
     public interface IPropertyFormatter
     {
-        PropertyElement[] ToProperties(Type type, object obj);
+        IReadOnlyDictionary<string, PropertyDescription> GetPropertiesByName(Type type);
+
+        IReadOnlyList<PropertyDescription> GetPropertiesByOrdinal(Type type);
+
+        IEnumerable<PropertyElement> ToProperties(Type type, object obj);
 
         object FromProperties(Type type, IEnumerable<PropertyElement> properties);
     }

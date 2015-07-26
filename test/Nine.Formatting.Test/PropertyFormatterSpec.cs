@@ -11,6 +11,7 @@
         public void round_trip()
         {
             RoundTrip(new BasicTypes());
+            RoundTrip(new ImmutableTypes());
         }
 
         private void RoundTrip<T>(T obj)

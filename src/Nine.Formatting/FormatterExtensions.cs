@@ -12,12 +12,31 @@
         public static T FromBytes<T>(this IFormatter formatter, byte[] bytes)
             => formatter.FromBytes<T>(bytes, 0, bytes.Length);
 
-        public static PropertyElement[] ToProperties<T>(this IPropertyFormatter formatter, T obj)
+        public static IEnumerable<PropertyElement> ToProperties<T>(this IPropertyFormatter formatter, T obj)
             => formatter.ToProperties(typeof(T), obj);
 
         public static T FromProperties<T>(this IPropertyFormatter formatter, IEnumerable<PropertyElement> properties)
             => (T)formatter.FromProperties(typeof(T), properties);
-        
+
+        public static T FromProperties<T>(this IPropertyFormatter formatter, IReadOnlyDictionary<string, string> properties)
+        {
+            var type = typeof(T);
+            var descriptions = formatter.GetPropertiesByName(type);
+            var elements = new List<PropertyElement>(properties.Count);
+
+            foreach (var pair in properties)
+            {
+                PropertyDescription desc;
+
+                if (descriptions.TryGetValue(pair.Key, out desc))
+                {
+                    elements.Add(new PropertyElement(desc, null, pair.Value));
+                }
+            }
+
+            return (T)formatter.FromProperties(type, elements);
+        }
+
         public static T FromText<T>(this IFormatter formatter, string text)
         {
             var textFormatter = formatter as ITextFormatter;
@@ -47,6 +66,7 @@
         {
             if (Equals(value, default(T))) return default(T);
 
+            var properties = formatter.ToProperties(value);
             return formatter.FromProperties<T>(formatter.ToProperties(value));
         }
     }
