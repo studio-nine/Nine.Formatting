@@ -5,12 +5,12 @@
 
     public class PropertyFormatter : IPropertyFormatter
     {
-        public object FromProperties(Type type, IEnumerable<PropertyElement> properties)
+        public PropertyElement[] ToProperties(Type type, object obj)
         {
             throw new NotImplementedException();
         }
 
-        public PropertyElement[] ToProperties(Type type, object obj)
+        public object FromProperties(Type type, IEnumerable<PropertyElement> properties)
         {
             throw new NotImplementedException();
         }
