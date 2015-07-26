@@ -2,12 +2,12 @@
 {
     public enum PropertyType
     {
+        Unknown,
         String,
         Boolean,
         DateTime,
         DateTimeOffset,
         TimeSpan,
-        Guid,
         Byte,
         SByte,
         Char,

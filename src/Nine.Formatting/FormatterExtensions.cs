@@ -42,5 +42,12 @@
             var bytes = formatter.ToBytes(value);
             return (T)formatter.FromBytes(type, bytes, 0, bytes.Length);
         }
+
+        public static T Copy<T>(this IPropertyFormatter formatter, T value)
+        {
+            if (Equals(value, default(T))) return default(T);
+
+            return formatter.FromProperties<T>(formatter.ToProperties(value));
+        }
     }
 }
