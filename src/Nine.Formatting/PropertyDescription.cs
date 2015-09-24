@@ -4,9 +4,8 @@
     using System.Collections.Generic;
     using System.Reflection;
 
-    public class PropertyDescription : ICustomAttributeProvider
+    public class PropertyDescription
     {
-        private readonly ICustomAttributeProvider _icap;
         private readonly Func<object, object> _getter;
         private readonly Action<object, object> _setter;
 
@@ -31,8 +30,7 @@
             : this(property.Name, property.PropertyType, ordinal,
                    !property.SetMethod?.IsPublic ?? true,
                    new Func<object, object>(property.GetValue),
-                   new Action<object, object>(property.SetValue),
-                   property)
+                   new Action<object, object>(property.SetValue))
         {
             if (property.GetIndexParameters().Length > 0 || !property.CanRead)
             {
@@ -43,29 +41,25 @@
         public PropertyDescription(FieldInfo field, int ordinal)
             : this(field.Name, field.FieldType, ordinal, field.IsInitOnly,
                    new Func<object, object>(field.GetValue),
-                   new Action<object, object>(field.SetValue),
-                   field)
+                   new Action<object, object>(field.SetValue))
         { }
 
         public PropertyDescription(ParameterInfo parameter, int ordinal)
             : this(parameter.Name, parameter.ParameterType,
-                   ordinal, false, null, null,
-                   parameter, parameter.DefaultValue)
+                   ordinal, false, null, null, parameter.DefaultValue)
         { }
 
         public PropertyDescription(
             string name, Type type, int ordinal, bool isReadOnly,
             Func<object, object> getter, Action<object, object> setter,
-            ICustomAttributeProvider customAttributeProvider, object defaultValue = null)
+            object defaultValue = null)
         {
-            if (customAttributeProvider == null) throw new ArgumentNullException(nameof(customAttributeProvider));
             if (string.IsNullOrEmpty(name)) throw new ArgumentException(nameof(name));
 
             var elementType = UnwrapArrayType(type);
 
             this._getter = getter;
             this._setter = setter;
-            this._icap = customAttributeProvider;
             this.DefaultValue = defaultValue;
             this.Ordinal = ordinal;
             this.Name = name;
@@ -123,14 +117,5 @@
 
             return PropertyType.Unknown;
         }
-
-        public object[] GetCustomAttributes(Type attributeType, bool inherit)
-            => _icap.GetCustomAttributes(attributeType, inherit);
-
-        public object[] GetCustomAttributes(bool inherit)
-            => _icap.GetCustomAttributes(inherit);
-
-        public bool IsDefined(Type attributeType, bool inherit)
-            => _icap.IsDefined(attributeType, inherit);
     }
 }

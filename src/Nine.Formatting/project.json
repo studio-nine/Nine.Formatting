@@ -8,14 +8,25 @@
   "licenseUrl": "https://github.com/studio-nine/Nine.Formatting/blob/master/LICENSE",
 
   "dependencies": {
-    "Newtonsoft.Json": "6.0.8",
-    "protobuf-net": "2.0.0.668"
+    "Newtonsoft.Json": "6.0.8"
   },
 
   "frameworks": {
     "dnx451": {
       "frameworkAssemblies": {
         "System.Xml": "4.0.0.0"
+      },
+      "dependencies": {
+        "protobuf-net": "2.0.0.668"
+      },
+      "compilationOptions": {
+        "define": [ "PROTOBUF" ]
+      }
+    },
+    "dotnet": {
+      "dependencies": {
+        "Microsoft.NETCore": "5.0.0",
+        "System.Reflection": "4.0.10"
       }
     }
   }

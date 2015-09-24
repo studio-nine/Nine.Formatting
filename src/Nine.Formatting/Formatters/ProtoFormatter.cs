@@ -1,5 +1,6 @@
 ﻿namespace Nine.Formatting
 {
+#if PROTOBUF
     using System;
     using System.Reflection;
     using System.IO;
@@ -7,7 +8,6 @@
     using ProtoBuf;
     using System.Collections.Concurrent;
 
-#if !PCL
     public class ProtoFormatter : IFormatter
     {
         private readonly MethodInfo deserialize = typeof(Serializer).GetRuntimeMethods().Single(m => m.Name == "Deserialize");

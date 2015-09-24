@@ -96,7 +96,7 @@
                 case PropertyType.UInt64: return ((UInt64)value).ToString(CultureInfo.InvariantCulture);
                 case PropertyType.Single: return ((Single)value).ToString(CultureInfo.InvariantCulture);
                 case PropertyType.Double: return ((Double)value).ToString(CultureInfo.InvariantCulture);
-                case PropertyType.Char: return ((Char)value).ToString(CultureInfo.InvariantCulture);
+                case PropertyType.Char: return ((Char)value).ToString();
                 case PropertyType.Decimal: return ((Decimal)value).ToString(CultureInfo.InvariantCulture);
                 case PropertyType.DateTime: return ((DateTime)value).ToString("o", CultureInfo.InvariantCulture);
                 case PropertyType.DateTimeOffset: return ((DateTimeOffset)value).ToString("o", CultureInfo.InvariantCulture);
