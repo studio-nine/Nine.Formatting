@@ -8,46 +8,21 @@
   "licenseUrl": "https://github.com/studio-nine/Nine.Formatting/blob/master/LICENSE",
 
   "dependencies": {
-    "Newtonsoft.Json": "7.0.1"
+    "Newtonsoft.Json": "8.0.1",
+    "protobuf-net": "2.1.0-alpha-1"
   },
 
   "frameworks": {
+    "dotnet5.4": {
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.0",
+        "System.Collections.Concurrent": "4.0.0"
+      }
+    },
     "dnx451": {
-      "frameworkAssemblies": {
-        "System.Xml": "4.0.0.0"
-      },
       "dependencies": {
-        "protobuf-net": "2.0.0.668"
-      },
-      "compilationOptions": {
-        "define": [ "PROTOBUF" ]
-      }
-    },
-    "dotnet": {
-      "dependencies": {
-        "Microsoft.NETCore": "5.0.0",
-        "System.Reflection": "4.0.10"
-      }
-    },
-    ".NETPortable,Version=v4.5,Profile=Profile78": {
-      "frameworkAssemblies": {
-        "System.Collections": "",
-        "System.Diagnostics.Debug": "",
-        "System.Diagnostics.Tools": "",
-        "System.Globalization": "",
-        "System.IO": "",
-        "System.Linq": "",
-        "System.Reflection": "",
-        "System.Reflection.Extensions": "",
-        "System.Runtime": "",
-        "System.Runtime.Extensions": "",
-        "System.Threading": "",
-        "System.Threading.Tasks": "",
-        "System.Text.Encoding": "",
-        "System.Text.Encoding.Extensions": ""
-      },
-      "compilationOptions": {
-        "define": [ "PCL" ]
+        "Microsoft.CSharp": "4.0.0",
+        "System.Collections.Concurrent": "4.0.0"
       }
     }
   }

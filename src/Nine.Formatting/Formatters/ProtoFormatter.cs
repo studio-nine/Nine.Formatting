@@ -1,6 +1,5 @@
 ﻿namespace Nine.Formatting
 {
-#if PROTOBUF
     using System;
     using System.Reflection;
     using System.IO;
@@ -10,11 +9,9 @@
 
     public class ProtoFormatter : IFormatter
     {
-        private readonly MethodInfo deserialize = typeof(Serializer).GetRuntimeMethods().Single(m => m.Name == "Deserialize");
-
         public object FromBytes(Type type, byte[] bytes, int index, int count)
         {
-            var result = deserialize.MakeGenericMethod(type).Invoke(null, new object[] { new MemoryStream(bytes, index, count) });
+            var result = Serializer.Deserialize(type, new MemoryStream(bytes, index, count));
             MakeDateTimeUtc(result);
             return result;
         }
@@ -69,5 +66,4 @@
             return DateTime.SpecifyKind(value, DateTimeKind.Utc);
         }
     }
-#endif
 }
