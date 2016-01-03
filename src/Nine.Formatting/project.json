@@ -20,9 +20,8 @@
       }
     },
     "dnx451": {
-      "dependencies": {
-        "Microsoft.CSharp": "4.0.0",
-        "System.Collections.Concurrent": "4.0.0"
+      "frameworkAssemblies": {
+        "System.Collections.Concurrent": "4.0.0.0"
       }
     }
   }
