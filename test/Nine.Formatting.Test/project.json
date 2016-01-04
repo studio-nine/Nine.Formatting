@@ -6,11 +6,7 @@
   },
 
   "frameworks": {
-    "dnx46": {
-      "dependencies": {
-        "System.Runtime": "4.0.20"
-      }
-    }
+    "dnx451": { }
   },
 
   "commands": {
