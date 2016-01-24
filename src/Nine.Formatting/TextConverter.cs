@@ -5,13 +5,6 @@
     using System.Linq;
     using System.Reflection;
 
-    public interface ITextConverter { }
-    public interface ITextConverter<T> : ITextConverter
-    {
-        string ToText(T value);
-        T FromText(string text);
-    }
-
     public class TextConverter
     {
         private readonly Dictionary<Type, IConverter> converters;
