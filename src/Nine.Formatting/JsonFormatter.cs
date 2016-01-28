@@ -1,27 +1,26 @@
 ﻿namespace Nine.Formatting
 {
     using System;
-    using System.Globalization;
     using System.IO;
     using System.Text;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
     using Newtonsoft.Json.Serialization;
 
-    public class JsonFormatter : IFormatter, ITextFormatter
+    public class JsonFormatter : IFormatter
     {
         public Formatting Formatting
         {
-            get { return json.Formatting; }
-            set { json.Formatting = value; }
+            get { return _json.Formatting; }
+            set { _json.Formatting = value; }
         }
 
-        private readonly Encoding encoding = new UTF8Encoding(false);
-        private readonly JsonSerializer json;
+        private readonly Encoding _encoding = new UTF8Encoding(false, true);
+        private readonly JsonSerializer _json;
         
         public JsonFormatter(TextConverter textConverter = null, params JsonConverter[] converters)
         {
-            json = new JsonSerializer
+            _json = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 DefaultValueHandling = DefaultValueHandling.Ignore,
@@ -33,48 +32,31 @@
             {
                 foreach (var converter in converters)
                 {
-                    json.Converters.Add(converter);
+                    _json.Converters.Add(converter);
                 }
             }
 
             if (textConverter != null)
             {
-                json.Converters.Add(new TextConverterJsonConverter(textConverter));
+                _json.Converters.Add(new TextConverterJsonConverter(textConverter));
             }
 
-            json.Converters.Add(new NoThrowStringEnumConverter());
+            _json.Converters.Add(new NoThrowStringEnumConverter());
         }
 
-        public object FromBytes(Type type, byte[] bytes, int index, int count)
+        public void WriteTo(object value, Stream stream)
         {
-            return FromText(type, encoding.GetString(bytes, index, count));
-        }
-
-        public byte[] ToBytes(object value)
-        {
-            return encoding.GetBytes(ToText(value));
-        }
-
-        public string ToText(object value)
-        {
-            var sb = StringBuilderCache.Acquire(250);
-            var stringWriter = new StringWriter(sb, CultureInfo.InvariantCulture);
-            using (var writer = new JsonTextWriter(stringWriter))
+            using (var writer = new StreamWriter(stream, _encoding, 1024, leaveOpen: true))
             {
-                writer.Formatting = json.Formatting;
-
-                json.Serialize(writer, value);
+                _json.Serialize(writer, value);
             }
-            return StringBuilderCache.GetStringAndRelease(sb);
         }
 
-        public object FromText(Type type, string text)
+        public object ReadFrom(Type type, Stream stream)
         {
-            if (string.IsNullOrEmpty(text)) return null;
-
-            using (var reader = new JsonTextReader(new StringReader(text)))
+            using (var reader = new StreamReader(stream, _encoding, true, 1024, leaveOpen: true))
             {
-                return json.Deserialize(reader, type);
+                return _json.Deserialize(reader, type);
             }
         }
 
@@ -95,27 +77,18 @@
 
         class TextConverterJsonConverter : JsonConverter
         {
-            private readonly TextConverter converter;
+            private readonly TextConverter _converter;
 
-            public TextConverterJsonConverter(TextConverter converter)
-            {
-                this.converter = converter;
-            }
+            public TextConverterJsonConverter(TextConverter converter) { _converter = converter; }
 
             public override bool CanConvert(Type objectType)
-            {
-                return converter.CanConvert(objectType);
-            }
+                => _converter.CanConvert(objectType);
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                return converter.FromText(objectType, reader.Value.ToString());
-            }
+                => _converter.FromText(objectType, reader.Value.ToString());
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                writer.WriteValue(converter.ToText(value));
-            }
+                => _converter.ToText(value);
         }
     }
 }

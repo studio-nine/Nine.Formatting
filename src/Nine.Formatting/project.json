@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.2.2-*",
+  "version": "1.4.0-*",
   "description": "A portable text and binary serialization library for flat POCOs",
   "authors": [ "Yufei Huang" ],
   "tags": [ "PCL", "Portable", "Serialization", "Formatting", "Json", "Protobuf" ],
@@ -8,9 +8,9 @@
   "licenseUrl": "https://github.com/studio-nine/Nine.Formatting/blob/master/LICENSE",
 
   "dependencies": {
-    "Newtonsoft.Json": "8.0.1",
+    "Newtonsoft.Json": "8.0.2",
     "Nine.Formatting.Abstractions": "",
-    "protobuf-net": "2.1.0-alpha-1"
+    "protobuf-net": "2.1.0-*"
   },
 
   "frameworks": {

@@ -9,20 +9,16 @@
 
     public class ProtoFormatter : IFormatter
     {
-        public object FromBytes(Type type, byte[] bytes, int index, int count)
+        public object ReadFrom(Type type, Stream stream)
         {
-            var result = Serializer.Deserialize(type, new MemoryStream(bytes, index, count));
+            var result = Serializer.Deserialize(type, stream);
             MakeDateTimeUtc(result);
             return result;
         }
 
-        public byte[] ToBytes(object value)
+        public void WriteTo(object value, Stream stream)
         {
-            if (value == null) return new byte[0];
-
-            var ms = new MemoryStream(256);
-            Serializer.Serialize(ms, value);
-            return ms.ToArray();
+            Serializer.Serialize(stream, value);
         }
 
         private void MakeDateTimeUtc(object result)

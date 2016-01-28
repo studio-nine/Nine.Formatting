@@ -20,7 +20,6 @@
                 new ProtoFormatter(),
                 new JsonFormatter(converter),
                 new BsonFormatter(),
-                new UriFormatter(converter),
             };
         });
 
@@ -31,7 +30,7 @@
             var b = PingPong(formatter, a, text =>
             {
                 // Should respect type convert and not use full type name.
-                if (formatter is JsonFormatter || formatter is UriFormatter)
+                if (formatter is JsonFormatter)
                 {
                     Assert.False(text.Contains("Nine.Formatting"));
                 }

@@ -2,19 +2,17 @@
 {
     using System;
     using System.IO;
-    using System.Text;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Bson;
     using Newtonsoft.Json.Serialization;
 
     public class BsonFormatter : IFormatter
     {
-        private readonly Encoding encoding = new UTF8Encoding(false);
-        private readonly JsonSerializer json;
+        private readonly JsonSerializer _json;
 
         public BsonFormatter(params JsonConverter[] defaultConverters)
         {
-            json = new JsonSerializer
+            _json = new JsonSerializer
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 DefaultValueHandling = DefaultValueHandling.Ignore,
@@ -25,66 +23,50 @@
             {
                 foreach (var converter in defaultConverters)
                 {
-                    json.Converters.Add(converter);
+                    _json.Converters.Add(converter);
                 }
             }
-            json.Converters.Add(new TimeSpanConverter());
-            json.Converters.Add(new DateTimeConverter());
+            _json.Converters.Add(new TimeSpanConverter());
+            _json.Converters.Add(new DateTimeConverter());
         }
 
-        public object FromBytes(Type type, byte[] bytes, int index, int count)
+        public object ReadFrom(Type type, Stream stream)
         {
-            using (var reader = new BsonReader(new MemoryStream(bytes, index, count)))
+            using (var reader = new BsonReader(stream))
             {
-                return json.Deserialize(reader, type);
+                return _json.Deserialize(reader, type);
             }
         }
 
-        public byte[] ToBytes(object value)
+        public void WriteTo(object value, Stream stream)
         {
-            var ms = new MemoryStream(256);
-            using (var writer = new BsonWriter(ms))
+            using (var writer = new BsonWriter(stream))
             {
-                writer.Formatting = json.Formatting;
-                json.Serialize(writer, value);
+                writer.Formatting = _json.Formatting;
+                _json.Serialize(writer, value);
             }
-            return ms.ToArray();
         }
-
+        
         class TimeSpanConverter : JsonConverter
         {
-            public override bool CanConvert(Type objectType)
-            {
-                return objectType == typeof(TimeSpan);
-            }
+            public override bool CanConvert(Type objectType) => objectType == typeof(TimeSpan);
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                writer.WriteValue(((TimeSpan)value).Ticks);
-            }
+                => writer.WriteValue(((TimeSpan)value).Ticks);
 
             public override object ReadJson(JsonReader reader, Type type, object value, JsonSerializer serializer)
-            {
-                return TimeSpan.FromTicks((long)reader.Value);
-            }
+                => TimeSpan.FromTicks((long)reader.Value);
         }
 
         class DateTimeConverter : JsonConverter
         {
-            public override bool CanConvert(Type objectType)
-            {
-                return objectType == typeof(DateTime);
-            }
+            public override bool CanConvert(Type objectType) => objectType == typeof(DateTime);
 
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                writer.WriteValue(((DateTime)value).Ticks);
-            }
+                => writer.WriteValue(((DateTime)value).Ticks);
 
             public override object ReadJson(JsonReader reader, Type type, object value, JsonSerializer serializer)
-            {
-                return new DateTime((long)reader.Value, DateTimeKind.Utc);
-            }
+                => new DateTime((long)reader.Value, DateTimeKind.Utc);
         }
     }
 }

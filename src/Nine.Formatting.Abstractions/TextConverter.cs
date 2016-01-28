@@ -7,11 +7,12 @@
 
     public class TextConverter
     {
-        private readonly Dictionary<Type, IConverter> converters;
+        private readonly Dictionary<Type, IConverter> _converters;
 
+        public TextConverter() { }
         public TextConverter(params ITextConverter[] converters)
         {
-            this.converters = converters
+            _converters = converters
                 .GroupByGenericTypeArgument(typeof(ITextConverter<>), false)
                 .ToDictionary(p => p.Key, p => (IConverter)Activator.CreateInstance(typeof(Converter<>).MakeGenericType(p.Key), p.Value));
         }
@@ -23,10 +24,11 @@
 
         private IConverter GetConverter(Type type)
         {
+            if (_converters == null) return null;
             IConverter converter = null;
             while (type != null)
             {
-                if (converters.TryGetValue(type, out converter)) break;
+                if (_converters.TryGetValue(type, out converter)) break;
                 type = type.GetTypeInfo().BaseType;
             }
             return converter;
@@ -84,22 +86,13 @@
 
         class Converter<T> : IConverter
         {
-            private readonly ITextConverter<T> converter;
+            private readonly ITextConverter<T> _converter;
 
-            public Converter(ITextConverter<T> converter)
-            {
-                this.converter = converter;
-            }
+            public Converter(ITextConverter<T> converter) { _converter = converter; }
 
-            public object FromText(string text)
-            {
-                return converter.FromText(text);
-            }
+            public object FromText(string text) => _converter.FromText(text);
 
-            public string ToText(object value)
-            {
-                return converter.ToText((T)value);
-            }
+            public string ToText(object value) => _converter.ToText((T)value);
         }
     }
 }

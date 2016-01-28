@@ -1,11 +1,12 @@
 ﻿namespace Nine.Formatting
 {
     using System;
+    using System.IO;
 
     public interface IFormatter
     {
-        byte[] ToBytes(object value);
+        void WriteTo(object value, Stream stream);
 
-        object FromBytes(Type type, byte[] bytes, int index, int count);
+        object ReadFrom(Type type, Stream stream);
     }
 }
