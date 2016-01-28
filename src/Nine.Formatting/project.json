@@ -8,6 +8,7 @@
   "licenseUrl": "https://github.com/studio-nine/Nine.Formatting/blob/master/LICENSE",
 
   "dependencies": {
+    "Jil": "2.13.0-*",
     "Newtonsoft.Json": "8.0.2",
     "Nine.Formatting.Abstractions": "",
     "protobuf-net": "2.1.0-*"

@@ -19,6 +19,7 @@
             {
                 new ProtoFormatter(),
                 new JsonFormatter(converter),
+                new JilFormatter(),
                 new BsonFormatter(),
             };
         });
