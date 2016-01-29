@@ -1,11 +1,12 @@
 ﻿namespace Nine.Formatting
 {
+    using System;
     using System.IO;
     using System.Text;
 
     public static class FormatterExtensions
     {
-        private static readonly Encoding _encoding = new UTF8Encoding(false, true);
+        private static readonly Encoding s_encoding = new UTF8Encoding(false, true);
 
         public static T ReadFrom<T>(this IFormatter formatter, Stream stream)
         {
@@ -14,15 +15,23 @@
 
         public static T ReadFrom<T>(this ITextFormatter formatter, Stream stream)
         {
-            using (var reader = new StreamReader(stream, _encoding, true, 1024, leaveOpen: true))
+            using (var reader = new StreamReader(stream, s_encoding, true, 1024, leaveOpen: true))
             {
                 return (T)formatter.ReadFrom(typeof(T), new StreamReader(stream));
             }
         }
 
-        public static void WriteTo<T>(this ITextFormatter formatter, T value, Stream stream)
+        public static object ReadFrom(this ITextFormatter formatter, Type type, Stream stream)
         {
-            using (var writer = new StreamWriter(stream, _encoding, 1024, leaveOpen: true))
+            using (var reader = new StreamReader(stream, s_encoding, true, 1024, leaveOpen: true))
+            {
+                return formatter.ReadFrom(type, new StreamReader(stream));
+            }
+        }
+
+        public static void WriteTo(this ITextFormatter formatter, object value, Stream stream)
+        {
+            using (var writer = new StreamWriter(stream, s_encoding, 1024, leaveOpen: true))
             {
                 formatter.WriteTo(value, writer);
             }
