@@ -37,6 +37,11 @@
             }
         }
 
+        public static object FromText(this ITextFormatter formatter, Type type, string text)
+        {
+            return formatter.ReadFrom(type, new StringReader(text));
+        }
+
         public static T FromText<T>(this ITextFormatter formatter, string text)
         {
             return (T)formatter.ReadFrom(typeof(T), new StringReader(text));
