@@ -30,11 +30,7 @@
             var a = new BasicTypes();
             var b = PingPong(formatter, a, text =>
             {
-                // Should respect type convert and not use full type name.
-                if (formatter is JsonFormatter)
-                {
-                    Assert.False(text.Contains("Nine.Formatting"));
-                }
+                Console.WriteLine($"{formatter.GetType().Name}:\n{text}\n");
             });
             Assert.Equal(JsonConvert.SerializeObject(a), JsonConvert.SerializeObject(b));
         }
@@ -97,6 +93,15 @@
                 formatter.ReadFrom<BasicTypes>(_ms);
             }
             Console.WriteLine("[perf]> " + formatter.GetType().Name + " \t" + sw.Elapsed.TotalMilliseconds / iterations + "ms");
+        }
+
+        [Fact]
+        public void jil_to_jsonnet()
+        {
+            var a = new BasicTypes();
+            var b = new JsonFormatter().FromText<BasicTypes>(new JilFormatter().ToText(new BasicTypes()));
+
+            Assert.Equal(JsonConvert.SerializeObject(a), JsonConvert.SerializeObject(b));
         }
 
         private T PingPong<T>(IFormatter formatter, T value, Action<string> action = null)

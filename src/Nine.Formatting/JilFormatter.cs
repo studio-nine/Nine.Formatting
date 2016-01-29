@@ -8,8 +8,15 @@
     public class JilFormatter : IFormatter, ITextFormatter
     {
         private readonly Encoding _encoding = new UTF8Encoding(false, true);
-        private readonly Options _options = Options.ISO8601ExcludeNullsIncludeInheritedUtcCamelCase;
-        
+        private readonly Options _options = new Options(
+            prettyPrint: false,
+            excludeNulls: true,
+            jsonp: false,
+            dateFormat: DateTimeFormat.ISO8601,
+            includeInherited: true,
+            unspecifiedDateTimeKindBehavior: UnspecifiedDateTimeKindBehavior.IsUTC,
+            serializationNameFormat: SerializationNameFormat.CamelCase);
+
         public void WriteTo(object value, Stream stream)
         {
             using (var writer = new StreamWriter(stream, _encoding, 1024, leaveOpen: true))
