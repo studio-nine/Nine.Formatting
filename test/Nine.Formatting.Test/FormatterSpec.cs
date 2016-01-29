@@ -2,13 +2,15 @@
 {
     using System;
     using System.Diagnostics;
-    using System.Text;
+    using System.IO;
     using Newtonsoft.Json;
-    using Xunit;
     using ProtoBuf;
+    using Xunit;
 
     public class FormatterSpec
     {
+        private readonly MemoryStream _ms = new MemoryStream(8000);
+
         public static TheoryData<IFormatter> Formatters => _formatters.Value;
 
         private static readonly Lazy<TheoryData<IFormatter>> _formatters = new Lazy<TheoryData<IFormatter>>(() =>
@@ -95,37 +97,46 @@
         {
             var sw = Stopwatch.StartNew();
             var a = new BasicTypes();
-            var iterations = 1000;
+            var iterations = 10000;
             for (int i = 0; i < iterations; i++)
             {
-                formatter.FromBytes<BasicTypes>(formatter.ToBytes(a));
+                _ms.Seek(0, SeekOrigin.Begin);
+                formatter.WriteTo(a, _ms);
+                _ms.Seek(0, SeekOrigin.Begin);
+                formatter.ReadFrom<BasicTypes>(_ms);
             }
-            Debug.WriteLine(formatter + " time " + sw.Elapsed.TotalMilliseconds / iterations + "ms");
+            Console.WriteLine("[perf]> " + formatter.GetType().Name + " \t" + sw.Elapsed.TotalMilliseconds / iterations + "ms");
         }
 
-        private static T PingPong<T>(IFormatter formatter, T value, Action<string> action = null)
+        private T PingPong<T>(IFormatter formatter, T value, Action<string> action = null)
         {
             var sw = Stopwatch.StartNew();
-            var bytes = formatter.ToBytes(value);
-            Debug.WriteLine("time " + sw.ElapsedMilliseconds + "ms");
-            Debug.WriteLine("length " + bytes.Length);
+            _ms.Seek(0, SeekOrigin.Begin);
+            formatter.WriteTo(value, _ms);
+            var writeMs = sw.ElapsedMilliseconds;
 
-            var text = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
-            Debug.WriteLine(text);
-
-            if (action != null) action(text);
+            if (action != null)
+            {
+                var textFormatter = formatter as ITextFormatter;
+                if (textFormatter != null)
+                {
+                    action(textFormatter.ToText(value));
+                }
+            }
 
             sw.Restart();
-            var result = formatter.FromBytes<T>(bytes);
-            Debug.WriteLine("time " + sw.ElapsedMilliseconds + "ms");
+            _ms.Seek(0, SeekOrigin.Begin);
+            var result = formatter.ReadFrom<T>(_ms);
+            Console.WriteLine($"{formatter.GetType().Name}\twrite: {writeMs}ms\tread: {sw.ElapsedMilliseconds}ms\t{_ms.Length}");
             return result;
         }
 
-        private static T2 PingPong<T1, T2>(IFormatter formatter, T1 value)
+        private T2 PingPong<T1, T2>(IFormatter formatter, T1 value)
         {
-            var bytes = formatter.ToBytes(value);
-            Debug.WriteLine(Encoding.UTF8.GetString(bytes, 0, bytes.Length));
-            return formatter.FromBytes<T2>(bytes);
+            _ms.Seek(0, SeekOrigin.Begin);
+            formatter.WriteTo(value, _ms);
+            _ms.Seek(0, SeekOrigin.Begin);
+            return formatter.ReadFrom<T2>(_ms);
         }
 
         [ProtoContract]

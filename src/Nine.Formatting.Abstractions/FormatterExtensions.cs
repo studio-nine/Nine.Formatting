@@ -1,46 +1,43 @@
 ﻿namespace Nine.Formatting
 {
-    using System;
     using System.IO;
     using System.Text;
 
     public static class FormatterExtensions
     {
-        public static byte[] ToBytes(this IFormatter formatter, object value)
+        private static readonly Encoding _encoding = new UTF8Encoding(false, true);
+
+        public static T ReadFrom<T>(this IFormatter formatter, Stream stream)
         {
-            var ms = new MemoryStream();
-            formatter.WriteTo(value, ms);
-            return ms.ToArray();
+            return (T)formatter.ReadFrom(typeof(T), stream);
         }
 
-        public static object FromBytes(this IFormatter formatter, Type type, byte[] bytes, int index, int count)
-            => formatter.ReadFrom(type, new MemoryStream(bytes, index, count, writable: false));
-
-        public static T FromBytes<T>(this IFormatter formatter, byte[] bytes, int index, int count)
-            => (T)formatter.FromBytes(typeof(T), bytes, index, count);
-
-        public static T FromBytes<T>(this IFormatter formatter, byte[] bytes)
-            => formatter.FromBytes<T>(bytes, 0, bytes.Length);
-        
-        public static T FromText<T>(this IFormatter formatter, string text)
+        public static T ReadFrom<T>(this ITextFormatter formatter, Stream stream)
         {
-            return FromBytes<T>(formatter, Encoding.UTF8.GetBytes(text));
+            using (var reader = new StreamReader(stream, _encoding, true, 1024, leaveOpen: true))
+            {
+                return (T)formatter.ReadFrom(typeof(T), new StreamReader(stream));
+            }
         }
 
-        public static string ToText<T>(this IFormatter formatter, T value)
+        public static void WriteTo<T>(this ITextFormatter formatter, T value, Stream stream)
         {
-            var bytes = formatter.ToBytes(value);
-            return Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+            using (var writer = new StreamWriter(stream, _encoding, 1024, leaveOpen: true))
+            {
+                formatter.WriteTo(value, writer);
+            }
         }
 
-        public static T Copy<T>(this IFormatter formatter, T value)
+        public static T FromText<T>(this ITextFormatter formatter, string text)
         {
-            if (Equals(value, default(T))) return default(T);
-            var type = typeof(T);
-            var ms = new MemoryStream();
-            formatter.WriteTo(value, ms);
-            ms.Seek(0, SeekOrigin.Begin);
-            return (T)formatter.ReadFrom(type, ms);
+            return (T)formatter.ReadFrom(typeof(T), new StringReader(text));
+        }
+
+        public static string ToText(this ITextFormatter formatter, object value)
+        {
+            var sb = StringBuilderCache.Acquire(256);
+            formatter.WriteTo(value, new StringWriter(sb));
+            return StringBuilderCache.GetStringAndRelease(sb);
         }
     }
 }

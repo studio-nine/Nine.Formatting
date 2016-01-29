@@ -2,23 +2,23 @@
 {
     using System;
     using System.IO;
+    using System.Text;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Bson;
     using Newtonsoft.Json.Serialization;
 
     public class BsonFormatter : IFormatter
     {
-        private readonly JsonSerializer _json;
+        private static readonly Encoding _encoding = new UTF8Encoding(false, true);
+        private readonly JsonSerializer _json = new JsonSerializer
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+        };
 
         public BsonFormatter(params JsonConverter[] defaultConverters)
         {
-            _json = new JsonSerializer
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            };
-
             if (defaultConverters != null)
             {
                 foreach (var converter in defaultConverters)
@@ -32,7 +32,8 @@
 
         public object ReadFrom(Type type, Stream stream)
         {
-            using (var reader = new BsonReader(stream))
+            using (var binary = new BinaryReader(stream, _encoding, leaveOpen: true))
+            using (var reader = new BsonReader(binary))
             {
                 return _json.Deserialize(reader, type);
             }
@@ -40,7 +41,8 @@
 
         public void WriteTo(object value, Stream stream)
         {
-            using (var writer = new BsonWriter(stream))
+            using (var binary = new BinaryWriter(stream, _encoding, leaveOpen: true))
+            using (var writer = new BsonWriter(binary))
             {
                 writer.Formatting = _json.Formatting;
                 _json.Serialize(writer, value);

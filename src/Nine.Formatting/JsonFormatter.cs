@@ -7,7 +7,7 @@
     using Newtonsoft.Json.Converters;
     using Newtonsoft.Json.Serialization;
 
-    public class JsonFormatter : IFormatter
+    public class JsonFormatter : IFormatter, ITextFormatter
     {
         public Formatting Formatting
         {
@@ -15,19 +15,17 @@
             set { _json.Formatting = value; }
         }
 
-        private readonly Encoding _encoding = new UTF8Encoding(false, true);
-        private readonly JsonSerializer _json;
-        
+        private static readonly Encoding _encoding = new UTF8Encoding(false, true);
+        private readonly JsonSerializer _json = new JsonSerializer
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+        };
+
         public JsonFormatter(TextConverter textConverter = null, params JsonConverter[] converters)
         {
-            _json = new JsonSerializer
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-            };
-
             if (converters != null)
             {
                 foreach (var converter in converters)
@@ -58,6 +56,16 @@
             {
                 return _json.Deserialize(reader, type);
             }
+        }
+
+        public void WriteTo(object value, TextWriter writer)
+        {
+            _json.Serialize(writer, value);
+        }
+
+        public object ReadFrom(Type type, TextReader reader)
+        {
+            return _json.Deserialize(reader, type);
         }
 
         class NoThrowStringEnumConverter : StringEnumConverter

@@ -5,7 +5,7 @@
     using System.Text;
     using Jil;
 
-    public class JilFormatter : IFormatter
+    public class JilFormatter : IFormatter, ITextFormatter
     {
         private readonly Encoding _encoding = new UTF8Encoding(false, true);
         private readonly Options _options = Options.ISO8601ExcludeNullsIncludeInheritedUtcCamelCase;
@@ -24,6 +24,16 @@
             {
                 return JSON.Deserialize(reader, type, _options);
             }
+        }
+
+        public void WriteTo(object value, TextWriter writer)
+        {
+            JSON.Serialize(value, writer, _options);
+        }
+
+        public object ReadFrom(Type type, TextReader reader)
+        {
+            return JSON.Deserialize(reader, type, _options);
         }
     }
 }

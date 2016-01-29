@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.4.0-*",
   "description": "A portable text and binary serialization library for flat POCOs",
   "authors": [ "Yufei Huang" ],
@@ -7,13 +7,18 @@
   "projectUrl": "https://github.com/studio-nine/Nine.Formatting",
   "licenseUrl": "https://github.com/studio-nine/Nine.Formatting/blob/master/LICENSE",
 
+  "compile": [
+    "../../Common/src/StringBuilderCache.cs"
+  ],
+
   "frameworks": {
     "dotnet5.0": {
       "dependencies": {
         "System.Collections": "4.0.0",
         "System.Linq": "4.0.0",
         "System.Reflection": "4.0.0",
-        "System.Text.Encoding": "4.0.10"
+        "System.Text.Encoding": "4.0.10",
+        "System.Text.Encoding.Extensions": "4.0.0"
       }
     },
     "dnx451": { }
