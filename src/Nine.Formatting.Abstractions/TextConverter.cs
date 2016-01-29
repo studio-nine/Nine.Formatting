@@ -34,7 +34,7 @@
             return converter;
         }
 
-        public bool ToText(object value, out string result)
+        public virtual bool ToText(object value, out string result)
         {
             if (value == null)
             {
@@ -59,7 +59,7 @@
             return ToText(value, out result) ? result : value?.ToString();
         }
 
-        public bool FromText(Type type, string text, out object value)
+        public virtual bool FromText(Type type, string text, out object value)
         {
             var converter = GetConverter(type);
             if (converter != null)

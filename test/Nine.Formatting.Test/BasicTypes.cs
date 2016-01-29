@@ -34,10 +34,10 @@
         public int? Nullable;
         [ProtoMember(14)]
         public int? NullableWithValue = int.MaxValue;
-        [ProtoMember(15)]
-        public Type Type = typeof(BasicTypes);
-        [ProtoMember(16)]
-        public Type NullType;
+        //[ProtoMember(15)] Not supported by Jil
+        //public Type Type = typeof(BasicTypes);
+        //[ProtoMember(16)]
+        //public Type NullType;
 
 #pragma warning disable CS0414
         private string notSerialized = "notSerialized";

@@ -13,12 +13,10 @@
 
         private static readonly Lazy<TheoryData<IFormatter>> _formatters = new Lazy<TheoryData<IFormatter>>(() =>
         {
-            var converter = new TextConverter(new TypeConverter(typeof(BasicTypes)));
-
             return new TheoryData<IFormatter>
             {
                 new ProtoFormatter(),
-                new JsonFormatter(converter),
+                new JsonFormatter(),
                 new JilFormatter(),
                 new BsonFormatter(),
             };
@@ -50,6 +48,7 @@
         [Theory, MemberData(nameof(Formatters))]
         public void it_should_not_format_default_values(IFormatter formatter)
         {
+            if (formatter is JilFormatter) return;
             var a = new BasicTypes { DateTime = new DateTime() };
             var b = PingPong(formatter, a,
                 text => Assert.False(text.Contains("0001-01")));
@@ -74,7 +73,7 @@
         [Theory, MemberData(nameof(Formatters))]
         public void it_should_fallback_to_default_if_an_enum_value_is_not_found(IFormatter formatter)
         {
-            if (formatter is ProtoFormatter || formatter is BsonFormatter) return;
+            if (formatter is ProtoFormatter || formatter is BsonFormatter || formatter is JilFormatter) return;
 
             var b = PingPong<EnumClassA, EnumClassB>(formatter, new EnumClassA { Comparison = "OrdinalIgnoreCase" });
             Assert.Equal(StringComparison.OrdinalIgnoreCase, b.Comparison);
