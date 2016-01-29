@@ -25,7 +25,7 @@
         [ProtoMember(9)]
         public DateTime DateTime = DateTime.UtcNow;
         [ProtoMember(10)]
-        public DateTime MinDateTime = DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc);
+        public DateTime MinDateTime = DateTime.SpecifyKind(DateTime.MinValue.AddDays(1), DateTimeKind.Utc);
         [ProtoMember(11)]
         public DateTime MaxDateTime = DateTime.SpecifyKind(DateTime.MaxValue.AddDays(-1), DateTimeKind.Utc);
         [ProtoMember(12)]

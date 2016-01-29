@@ -48,15 +48,6 @@
         }
 
         [Theory, MemberData(nameof(Formatters))]
-        public void it_should_not_format_default_values(IFormatter formatter)
-        {
-            if (formatter is JilFormatter) return;
-            var a = new BasicTypes { DateTime = new DateTime() };
-            var b = PingPong(formatter, a,
-                text => Assert.False(text.Contains("0001-01")));
-        }
-
-        [Theory, MemberData(nameof(Formatters))]
         public void i_can_add_new_fields(IFormatter formatter)
         {
             var a = new BasicTypes();
