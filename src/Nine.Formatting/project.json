@@ -8,7 +8,6 @@
   "licenseUrl": "https://github.com/studio-nine/Nine.Formatting/blob/master/LICENSE",
 
   "dependencies": {
-    "Jil": "2.13.0-*",
     "Newtonsoft.Json": "8.0.2",
     "Nine.Formatting.Abstractions": "",
     "protobuf-net": "2.1.0-*"
@@ -20,6 +19,21 @@
         "System.Collections.Concurrent": "4.0.0"
       }
     },
-    "dnx451": { }
+    "dnx451": { 
+        "compilationOptions": {
+            "define": [ "DESKTOP" ]
+        },
+        "dependencies": {
+            "Jil": "2.13.0-*"
+        }
+    },
+    "net451": {
+        "compilationOptions": {
+            "define": [ "DESKTOP" ]
+        },
+        "dependencies": {
+            "Jil": "2.13.0"
+        }
+    }
   }
 }

@@ -1,4 +1,5 @@
-﻿namespace Nine.Formatting
+﻿#if DESKTOP
+namespace Nine.Formatting
 {
     using System;
     using System.IO;
@@ -44,3 +45,4 @@
         }
     }
 }
+#endif

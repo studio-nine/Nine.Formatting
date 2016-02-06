@@ -14,13 +14,14 @@
   "frameworks": {
     "dotnet5.0": {
       "dependencies": {
-        "System.Collections": "4.0.0",
+        "System.Collections": "4.0.10",
         "System.Linq": "4.0.0",
         "System.Reflection": "4.0.0",
         "System.Text.Encoding": "4.0.10",
         "System.Text.Encoding.Extensions": "4.0.0"
       }
     },
-    "dnx451": { }
+    "dnx451": { },
+    "net451": { }
   }
 }
