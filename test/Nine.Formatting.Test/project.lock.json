@@ -154,15 +154,22 @@
         "dependencies": {
           "Jil": "2.13.0",
           "Newtonsoft.Json": "8.0.2",
-          "Nine.Formatting.Abstractions": null,
-          "protobuf-net": "2.1.0"
+          "Nine.Formatting.Abstractions": null
         }
       },
       "Nine.Formatting.Abstractions/1.4.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
       },
-      "protobuf-net/2.1.0-alpha-1": {
+      "Nine.Formatting.Protobuf/1.4.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "Nine.Formatting.Abstractions": null,
+          "protobuf-net": "2.1.0"
+        }
+      },
+      "protobuf-net/2.1.0-private": {
         "type": "package",
         "dependencies": {
           "System.Reflection.Emit": "4.0.1-beta-23516"
@@ -461,15 +468,22 @@
         "dependencies": {
           "Jil": "2.13.0",
           "Newtonsoft.Json": "8.0.2",
-          "Nine.Formatting.Abstractions": null,
-          "protobuf-net": "2.1.0"
+          "Nine.Formatting.Abstractions": null
         }
       },
       "Nine.Formatting.Abstractions/1.4.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
       },
-      "protobuf-net/2.1.0-alpha-1": {
+      "Nine.Formatting.Protobuf/1.4.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "Nine.Formatting.Abstractions": null,
+          "protobuf-net": "2.1.0"
+        }
+      },
+      "protobuf-net/2.1.0-private": {
         "type": "package",
         "dependencies": {
           "System.Reflection.Emit": "4.0.1-beta-23516"
@@ -768,15 +782,22 @@
         "dependencies": {
           "Jil": "2.13.0",
           "Newtonsoft.Json": "8.0.2",
-          "Nine.Formatting.Abstractions": null,
-          "protobuf-net": "2.1.0"
+          "Nine.Formatting.Abstractions": null
         }
       },
       "Nine.Formatting.Abstractions/1.4.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
       },
-      "protobuf-net/2.1.0-alpha-1": {
+      "Nine.Formatting.Protobuf/1.4.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "Nine.Formatting.Abstractions": null,
+          "protobuf-net": "2.1.0"
+        }
+      },
+      "protobuf-net/2.1.0-private": {
         "type": "package",
         "dependencies": {
           "System.Reflection.Emit": "4.0.1-beta-23516"
@@ -933,6 +954,10 @@
       "type": "project",
       "path": "../../src/Nine.Formatting.Abstractions/project.json"
     },
+    "Nine.Formatting.Protobuf/1.4.0": {
+      "type": "project",
+      "path": "../../src/Nine.Formatting.Protobuf/project.json"
+    },
     "Jil/2.13.0": {
       "type": "package",
       "sha512": "I2gZNmo1m7bZxg52BFE5H/uhXAMqx/DNNokLsE/yZDJ0isEZr96ynBPTMibX+O0NqB18+hHJu7okW9JFjbWFlw==",
@@ -1072,22 +1097,20 @@
         "tools/install.ps1"
       ]
     },
-    "protobuf-net/2.1.0-alpha-1": {
+    "protobuf-net/2.1.0-private": {
       "type": "package",
-      "sha512": "4eJbkmzlatW/DsszlP0cxOa3KdBmOTVkF7Tsm7fIQ4JVbDBypzMwGiEw10JjJF/R0t3tYshXBD6270PrwbUAzg==",
+      "sha512": "pLq4clPWg3knWGoO4/npZAmBdKPz+JRxKk4mGJlIWTCkH86w+7NhSjKkXHUAckoewe92b9xAQWgyNu0eRMPqKg==",
       "files": [
         "lib/dnx451/protobuf-net.dll",
         "lib/dnx451/protobuf-net.xml",
-        "lib/dotnet5.4/protobuf-net.dll",
-        "lib/dotnet5.4/protobuf-net.xml",
-        "lib/net30/protobuf-net.dll",
-        "lib/net30/protobuf-net.xml",
+        "lib/dotnet/protobuf-net.dll",
+        "lib/dotnet/protobuf-net.xml",
         "lib/net40/protobuf-net.dll",
         "lib/net40/protobuf-net.xml",
         "lib/net45/protobuf-net.dll",
         "lib/net45/protobuf-net.xml",
-        "protobuf-net.2.1.0-alpha-1.nupkg",
-        "protobuf-net.2.1.0-alpha-1.nupkg.sha512",
+        "protobuf-net.2.1.0-private.nupkg",
+        "protobuf-net.2.1.0-private.nupkg.sha512",
         "protobuf-net.nuspec"
       ]
     },
@@ -1118,7 +1141,7 @@
     "System.Reflection.Emit/4.0.1-beta-23516": {
       "type": "package",
       "serviceable": true,
-      "sha512": "4w2Piqjq8CKVQwvHHz4Fpsl5rcX4T49A+g1JXGqAOLXZYlkSpC6Dep9OZZZ6Z/LbruUQtuZN9MxLZHZJ1io2CQ==",
+      "sha512": "3j5EhKPGh7cbUu5QLP1RAabvjNIpJOr5hA1Ip5UQ4ozccUb6Fd3SZiP4VKpqm/RyVAZDnOc9vdNuazZebtJeHw==",
       "files": [
         "lib/DNXCore50/System.Reflection.Emit.dll",
         "lib/MonoAndroid10/_._",
@@ -1312,6 +1335,7 @@
   "projectFileDependencyGroups": {
     "": [
       "Nine.Formatting ",
+      "Nine.Formatting.Protobuf ",
       "xunit >= 2.1.0",
       "xunit.runner.dnx >= 2.1.0-*"
     ],
