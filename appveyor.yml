@@ -1,8 +1,0 @@
-install:
-  - dnvm upgrade
-  - dnu restore
-  - dnu pack src/*/project.json --configuration Release --out artifacts
-  - dnx -p test\Nine.Formatting.Test test
-build: off
-artifacts:
-  - path: artifacts\**\*.nupkg

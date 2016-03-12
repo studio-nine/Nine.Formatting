@@ -1,4 +1,4 @@
-﻿#if DESKTOP
+﻿#if FEATURE_JIL
 namespace Nine.Formatting
 {
     using System;

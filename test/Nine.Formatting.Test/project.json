@@ -1,16 +1,15 @@
 {
   "dependencies": {
-    "Nine.Formatting": "",
-    "Nine.Formatting.Protobuf": "",
-    "xunit": "2.1.0",
-    "xunit.runner.dnx": "2.1.0-*"
+    "Nine.Formatting.Json": "1.5.0-*",
+    "Nine.Formatting.Protobuf": "1.5.0-*",
+    "xunit": "2.1.0"
   },
 
   "frameworks": {
-    "dnx451": { }
-  },
-
-  "commands": {
-    "test": "xunit.runner.dnx"
+    "net451": {
+      "frameworkAssemblies": {
+        "System.Runtime": "4.0.0"
+      }
+    }
   }
 }

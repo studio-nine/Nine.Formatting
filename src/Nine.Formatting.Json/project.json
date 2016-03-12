@@ -1,4 +1,4 @@
-{
+﻿{
   "version": "1.5.0-*",
   "description": "A portable text and binary serialization library for flat POCOs",
   "authors": [ "Yufei Huang" ],
@@ -7,19 +7,33 @@
   "projectUrl": "https://github.com/studio-nine/Nine.Formatting",
   "licenseUrl": "https://github.com/studio-nine/Nine.Formatting/blob/master/LICENSE",
 
-  "compile": [
-    "../../Common/src/StringBuilderCache.cs"
-  ],
+  "dependencies": {
+    "Newtonsoft.Json": "8.0.2",
+    "Nine.Formatting.Abstractions": "1.5.0-*"
+  },
 
   "frameworks": {
     "dotnet5.0": {
       "dependencies": {
-        "System.Collections": "4.0.10",
-        "System.Linq": "4.0.0",
-        "System.Reflection": "4.0.0",
-        "System.Text.Encoding": "4.0.10",
-        "System.Text.Encoding.Extensions": "4.0.0"
-      }
+        "System.Collections.Concurrent": "4.0.0"
+      },
+      "imports": "portable-net45+wp80+win8+wpa81+dnxcore50"
+    },
+    "dnx451": { 
+        "compilationOptions": {
+            "define": [ "FEATURE_JIL" ]
+        },
+        "dependencies": {
+            "Jil": "2.13.0"
+        }
+    },
+    "net451": {
+        "compilationOptions": {
+            "define": [ "FEATURE_JIL" ]
+        },
+        "dependencies": {
+            "Jil": "2.13.0"
+        }
     },
     ".NETPortable,Version=v4.5,Profile=Profile7": {
       "frameworkAssemblies": {
@@ -41,8 +55,6 @@
         "System.Threading": "",
         "System.Threading.Tasks": ""
       }
-    },
-    "dnx451": { },
-    "net451": { }
+    }
   }
 }
