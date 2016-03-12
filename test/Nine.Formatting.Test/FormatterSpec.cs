@@ -87,10 +87,7 @@
             var iterations = 10000;
             for (int i = 0; i < iterations; i++)
             {
-                _ms.Seek(0, SeekOrigin.Begin);
-                formatter.WriteTo(a, _ms);
-                _ms.Seek(0, SeekOrigin.Begin);
-                formatter.ReadFrom<BasicTypes>(_ms);
+                PingPong<BasicTypes, BasicTypes>(formatter, a);
             }
             Console.WriteLine("[perf]> " + formatter.GetType().Name + " \t" + sw.Elapsed.TotalMilliseconds / iterations + "ms");
         }
@@ -107,8 +104,7 @@
         private T PingPong<T>(IFormatter formatter, T value, Action<string> action = null)
         {
             var sw = Stopwatch.StartNew();
-            _ms.Seek(0, SeekOrigin.Begin);
-            formatter.WriteTo(value, _ms);
+            var bytes = formatter.ToBytes(value);
             var writeMs = sw.ElapsedMilliseconds;
 
             if (action != null)
@@ -121,18 +117,14 @@
             }
 
             sw.Restart();
-            _ms.Seek(0, SeekOrigin.Begin);
-            var result = formatter.ReadFrom<T>(_ms);
+            var result = formatter.FromBytes<T>(bytes);
             Console.WriteLine($"{formatter.GetType().Name}\twrite: {writeMs}ms\tread: {sw.ElapsedMilliseconds}ms\t{_ms.Length}");
             return result;
         }
 
         private T2 PingPong<T1, T2>(IFormatter formatter, T1 value)
         {
-            _ms.Seek(0, SeekOrigin.Begin);
-            formatter.WriteTo(value, _ms);
-            _ms.Seek(0, SeekOrigin.Begin);
-            return formatter.ReadFrom<T2>(_ms);
+            return formatter.FromBytes<T2>(formatter.ToBytes(value));
         }
 
         [ProtoContract]

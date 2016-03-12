@@ -8,7 +8,8 @@
   "licenseUrl": "https://github.com/studio-nine/Nine.Formatting/blob/master/LICENSE",
 
   "compile": [
-    "../../Common/src/StringBuilderCache.cs"
+    "../../Common/src/StringBuilderCache.cs",
+    "../../Common/src/MemoryStreamCache.cs"
   ],
 
   "frameworks": {

@@ -12,7 +12,26 @@
         {
             return (T)formatter.ReadFrom(typeof(T), stream);
         }
+        
+        public static T FromBytes<T>(this IFormatter formatter, byte[] bytes)
+        {
+            var ms = new MemoryStream(bytes, writable: false);
+            return (T)formatter.ReadFrom(typeof(T), ms);
+        }
+        
+        public static T FromBytes<T>(this IFormatter formatter, byte[] bytes, int index, int count)
+        {
+            var ms = new MemoryStream(bytes, index, count, writable: false);
+            return (T)formatter.ReadFrom(typeof(T), ms);
+        }
 
+        public static byte[] ToBytes(this IFormatter formatter, object value)
+        {
+            var ms = MemoryStreamCache.Acquire();
+            formatter.WriteTo(value, ms);
+            return MemoryStreamCache.GetBytesAndRelease(ms);
+        }
+        
         public static T ReadFrom<T>(this ITextFormatter formatter, Stream stream)
         {
             using (var reader = new StreamReader(stream, s_encoding, true, 1024, leaveOpen: true))
