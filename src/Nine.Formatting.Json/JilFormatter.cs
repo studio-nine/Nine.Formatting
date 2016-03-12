@@ -9,14 +9,26 @@ namespace Nine.Formatting
     public class JilFormatter : IFormatter, ITextFormatter
     {
         private readonly Encoding _encoding = new UTF8Encoding(false, true);
-        private readonly Options _options = new Options(
-            prettyPrint: false,
-            excludeNulls: true,
-            jsonp: false,
-            dateFormat: DateTimeFormat.ISO8601,
-            includeInherited: true,
-            unspecifiedDateTimeKindBehavior: UnspecifiedDateTimeKindBehavior.IsUTC,
-            serializationNameFormat: SerializationNameFormat.CamelCase);
+        private readonly Options _options;
+       
+        public JilFormatter()
+        {
+            _options = new Options(
+                prettyPrint: false,
+                excludeNulls: true,
+                jsonp: false,
+                dateFormat: DateTimeFormat.ISO8601,
+                includeInherited: true,
+                unspecifiedDateTimeKindBehavior: UnspecifiedDateTimeKindBehavior.IsUTC,
+                serializationNameFormat: SerializationNameFormat.CamelCase);
+        }
+        
+        public JilFormatter(Options options)
+        {
+            if (options == null) throw new ArgumentNullException(nameof(options));
+            
+            _options = options;
+        }
 
         public void WriteTo(object value, Stream stream)
         {
