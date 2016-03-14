@@ -13,7 +13,6 @@
   },
 
   "frameworks": {
-    "dotnet5.4": { },
     "dnx451": { },
     "net451": { }
   }

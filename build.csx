@@ -1,3 +1,3 @@
 ﻿#load "Common/scripts/build.csx"
 
-BuildTestPublishPreRelease(suffix: "alpha2");
+BuildTestPublishPreRelease(suffix: "alpha3");

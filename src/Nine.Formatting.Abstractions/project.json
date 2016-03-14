@@ -13,15 +13,6 @@
   ],
 
   "frameworks": {
-    "dotnet5.0": {
-      "dependencies": {
-        "System.Collections": "4.0.10",
-        "System.Linq": "4.0.0",
-        "System.Reflection": "4.0.0",
-        "System.Text.Encoding": "4.0.10",
-        "System.Text.Encoding.Extensions": "4.0.0"
-      }
-    },
     ".NETPortable,Version=v4.5,Profile=Profile7": {
       "frameworkAssemblies": {
         "Microsoft.CSharp": { "type": "build" },
