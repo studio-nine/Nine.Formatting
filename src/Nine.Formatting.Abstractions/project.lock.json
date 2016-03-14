@@ -5,9 +5,6 @@
     ".NETFramework,Version=v4.5.1": {},
     ".NETFramework,Version=v4.5.1/win7-x64": {},
     ".NETFramework,Version=v4.5.1/win7-x86": {},
-    ".NETFramework,Version=v4.6": {},
-    ".NETFramework,Version=v4.6/win7-x64": {},
-    ".NETFramework,Version=v4.6/win7-x86": {},
     ".NETPlatform,Version=v5.0": {
       "System.Collections/4.0.10": {
         "type": "package",
@@ -638,7 +635,6 @@
   "projectFileDependencyGroups": {
     "": [],
     ".NETFramework,Version=v4.5.1": [],
-    ".NETFramework,Version=v4.6": [],
     ".NETPlatform,Version=v5.0": [
       "System.Collections >= 4.0.10",
       "System.Linq >= 4.0.0",
