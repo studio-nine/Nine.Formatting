@@ -34,7 +34,6 @@
         "System.Threading.Tasks": { "type": "build" }
       }
     },
-    "dnx451": { },
     "net451": { }
   }
 }

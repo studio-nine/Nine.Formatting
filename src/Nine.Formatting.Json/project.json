@@ -13,14 +13,6 @@
   },
 
   "frameworks": {
-    "dnx451": {
-        "compilationOptions": {
-            "define": [ "FEATURE_JIL" ]
-        },
-        "dependencies": {
-            "Jil": "2.13.0"
-        }
-    },
     "net451": {
         "compilationOptions": {
             "define": [ "FEATURE_JIL" ]
