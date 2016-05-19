@@ -1,5 +1,4 @@
-﻿#if FEATURE_JIL
-namespace Nine.Formatting
+﻿namespace Nine.Formatting
 {
     using System;
     using System.IO;
@@ -10,7 +9,7 @@ namespace Nine.Formatting
     {
         private readonly Encoding _encoding = new UTF8Encoding(false, true);
         private readonly Options _options;
-       
+
         public JilFormatter()
         {
             _options = new Options(
@@ -22,11 +21,11 @@ namespace Nine.Formatting
                 unspecifiedDateTimeKindBehavior: UnspecifiedDateTimeKindBehavior.IsUTC,
                 serializationNameFormat: SerializationNameFormat.CamelCase);
         }
-        
+
         public JilFormatter(Options options)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
-            
+
             _options = options;
         }
 
@@ -57,4 +56,3 @@ namespace Nine.Formatting
         }
     }
 }
-#endif
